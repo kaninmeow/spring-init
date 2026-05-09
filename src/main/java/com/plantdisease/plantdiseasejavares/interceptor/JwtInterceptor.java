@@ -1,6 +1,7 @@
 package com.plantdisease.plantdiseasejavares.interceptor;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.plantdisease.plantdiseasejavares.annotation.SkipJwtValidation;
 import com.plantdisease.plantdiseasejavares.common.Result;
 import com.plantdisease.plantdiseasejavares.common.ResultCode;
 import com.plantdisease.plantdiseasejavares.util.JwtUtil;
@@ -13,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
+import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 /**
@@ -36,6 +38,14 @@ public class JwtInterceptor implements HandlerInterceptor {
         // OPTIONS 请求直接放行
         if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
             return true;
+        }
+
+        // 检查 @SkipJwtValidation 注解，有则跳过校验
+        if (handler instanceof HandlerMethod handlerMethod) {
+            if (handlerMethod.hasMethodAnnotation(SkipJwtValidation.class)
+                    || handlerMethod.getBeanType().isAnnotationPresent(SkipJwtValidation.class)) {
+                return true;
+            }
         }
 
         String authHeader = request.getHeader(AUTHORIZATION_HEADER);

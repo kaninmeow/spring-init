@@ -1,5 +1,6 @@
 package com.plantdisease.plantdiseasejavares.controller;
 
+import com.plantdisease.plantdiseasejavares.annotation.SkipJwtValidation;
 import com.plantdisease.plantdiseasejavares.common.Result;
 import com.plantdisease.plantdiseasejavares.pojo.dto.LoginDTO;
 import com.plantdisease.plantdiseasejavares.pojo.dto.RegisterDTO;
@@ -31,35 +32,65 @@ public class AdminAuthController {
 
     private final AdminAuthService adminAuthService;
 
+    /**
+     *
+     * 管理员登录
+     * @param loginDTO
+     * @param request
+     * @return
+     */
     @Operation(summary = "管理员登录")
     @PostMapping("/login")
+    @SkipJwtValidation
     public Result<AdminLoginVO> login(@Valid @RequestBody LoginDTO loginDTO, HttpServletRequest request) {
         String ip = getClientIp(request);
         AdminLoginVO vo = adminAuthService.login(loginDTO, ip);
         return Result.success(vo);
     }
 
+    /**
+     * 管理员注册
+     * @param registerDTO
+     * @return
+     */
     @Operation(summary = "管理员注册")
     @PostMapping("/register")
+    @SkipJwtValidation
     public Result<Void> register(@Valid @RequestBody RegisterDTO registerDTO) {
         adminAuthService.register(registerDTO);
         return Result.success();
     }
 
+    /**
+     * 获取管理员信息
+     * @param request
+     * @return
+     */
     @Operation(summary = "获取管理员信息")
     @GetMapping("/info")
+    @SkipJwtValidation
     public Result<AdminInfoVO> info(HttpServletRequest request) {
         Long userId = SecurityUtil.getCurrentUserId(request);
         AdminInfoVO vo = adminAuthService.getAdminInfo(userId);
         return Result.success(vo);
     }
 
+    /**
+     * 管理员登出
+     * @return
+     */
     @Operation(summary = "管理员登出")
     @PostMapping("/logout")
+    @SkipJwtValidation
     public Result<Void> logout() {
         return Result.success();
     }
 
+    /**
+     * 获取用户IP
+     * @param request
+     * @return
+     */
     private String getClientIp(HttpServletRequest request) {
         String ip = request.getHeader("X-Forwarded-For");
         if (ip == null || ip.isEmpty() || "unknown".equalsIgnoreCase(ip)) {
