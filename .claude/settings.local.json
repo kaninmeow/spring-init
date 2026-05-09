@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(javap -c /d/project/PlantPestAndDiseaseIdentificationSystem/plant-disease-java-res/target/classes/com/plantdisease/plantdiseasejavares/controller/CookieController.class)",
+      "Bash(python3 -c ' *)",
+      "Bash(python -c ' *)",
+      "Bash(python *)"
+    ]
+  }
+}
