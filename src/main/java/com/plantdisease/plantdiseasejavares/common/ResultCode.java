@@ -17,6 +17,7 @@ public enum ResultCode {
     UNAUTHORIZED(401, "未登录或token已过期"),
     FORBIDDEN(403, "没有操作权限"),
     NOT_FOUND(404, "资源不存在"),
+    FILE_UPLOAD_ERROR(405, "文件上传失败"),
     ERROR(500, "服务器内部错误"),
 
     USERNAME_EXISTS(1001, "用户名已存在"),

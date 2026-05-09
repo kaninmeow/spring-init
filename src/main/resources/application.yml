@@ -36,3 +36,11 @@ springdoc:
     tags-sorter: alpha
   api-docs:
     path: /v3/api-docs
+
+aliyun:
+  oss:
+    endpoint: ${aliyun.oss.endpoint}
+    bucket-name: ${aliyun.oss.bucket-name}
+    region: ${aliyun.oss.region}
+    access-key-id: ${aliyun.oss.access-key-id}
+    access-key-secret: ${aliyun.oss.access-key-secret}
