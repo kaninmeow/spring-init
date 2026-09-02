@@ -4,11 +4,10 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.plantdisease.plantdiseasejavares.common.ResultCode;
 import com.plantdisease.plantdiseasejavares.pojo.dto.LoginDTO;
 import com.plantdisease.plantdiseasejavares.pojo.dto.RegisterDTO;
-import com.plantdisease.plantdiseasejavares.pojo.entity.SysAdmin;
+import com.plantdisease.plantdiseasejavares.pojo.entity.AdminUser;
 import com.plantdisease.plantdiseasejavares.exception.BusinessException;
-import com.plantdisease.plantdiseasejavares.mapper.SysAdminMapper;
+import com.plantdisease.plantdiseasejavares.mapper.AdminUserMapper;
 import com.plantdisease.plantdiseasejavares.service.AdminAuthService;
-import com.plantdisease.plantdiseasejavares.util.JwtUtil;
 import com.plantdisease.plantdiseasejavares.pojo.vo.AdminInfoVO;
 import com.plantdisease.plantdiseasejavares.pojo.vo.AdminLoginVO;
 import lombok.RequiredArgsConstructor;
@@ -28,15 +27,13 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 public class AdminAuthServiceImpl implements AdminAuthService {
 
-    private final SysAdminMapper sysAdminMapper;
-    private final JwtUtil jwtUtil;
+    private final AdminUserMapper adminUserMapper;
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @Override
     public AdminLoginVO login(LoginDTO loginDTO, String ip) {
-        SysAdmin admin = sysAdminMapper.selectOne(
-                new LambdaQueryWrapper<SysAdmin>()
-                        .eq(SysAdmin::getUsername, loginDTO.getUsername())
+        AdminUser admin = adminUserMapper.selectOne(
+                new LambdaQueryWrapper<AdminUser>().eq(AdminUser::getUsername, loginDTO.getUsername())
         );
 
         if (admin == null || !passwordEncoder.matches(loginDTO.getPassword(), admin.getPassword())) {
@@ -50,15 +47,11 @@ public class AdminAuthServiceImpl implements AdminAuthService {
         // 更新登录信息
         admin.setLastLoginTime(LocalDateTime.now());
         admin.setLastLoginIp(ip);
-        sysAdminMapper.updateById(admin);
-
-        // 生成 token
-        String token = jwtUtil.generateToken(admin.getId(), admin.getUsername(), admin.getRole());
+        adminUserMapper.updateById(admin);
 
         log.info("管理员登录成功: username={}", admin.getUsername());
 
         return AdminLoginVO.builder()
-                .token(token)
                 .id(admin.getId())
                 .username(admin.getUsername())
                 .name(admin.getName())
@@ -71,15 +64,15 @@ public class AdminAuthServiceImpl implements AdminAuthService {
     @Override
     public void register(RegisterDTO registerDTO) {
         // 检查用户名是否已存在
-        Long count = sysAdminMapper.selectCount(
-                new LambdaQueryWrapper<SysAdmin>()
-                        .eq(SysAdmin::getUsername, registerDTO.getUsername())
+        Long count = adminUserMapper.selectCount(
+                new LambdaQueryWrapper<AdminUser>()
+                        .eq(AdminUser::getUsername, registerDTO.getUsername())
         );
         if (count > 0) {
             throw new BusinessException(ResultCode.USERNAME_EXISTS);
         }
 
-        SysAdmin admin = new SysAdmin();
+        AdminUser admin = new AdminUser();
         admin.setUsername(registerDTO.getUsername());
         admin.setPassword(passwordEncoder.encode(registerDTO.getPassword()));
         admin.setName(registerDTO.getName() != null ? registerDTO.getName() : "");
@@ -88,13 +81,13 @@ public class AdminAuthServiceImpl implements AdminAuthService {
         admin.setRole("admin");
         admin.setStatus(1);
 
-        sysAdminMapper.insert(admin);
+        adminUserMapper.insert(admin);
         log.info("管理员注册成功: username={}", admin.getUsername());
     }
 
     @Override
     public AdminInfoVO getAdminInfo(Long adminId) {
-        SysAdmin admin = sysAdminMapper.selectById(adminId);
+        AdminUser admin = adminUserMapper.selectById(adminId);
         if (admin == null) {
             throw new BusinessException(ResultCode.NOT_FOUND, "管理员不存在");
         }

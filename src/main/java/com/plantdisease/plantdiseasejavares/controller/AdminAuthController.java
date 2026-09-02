@@ -1,11 +1,10 @@
 package com.plantdisease.plantdiseasejavares.controller;
 
-import com.plantdisease.plantdiseasejavares.annotation.SkipJwtValidation;
+import cn.dev33.satoken.stp.StpUtil;
 import com.plantdisease.plantdiseasejavares.common.Result;
 import com.plantdisease.plantdiseasejavares.pojo.dto.LoginDTO;
 import com.plantdisease.plantdiseasejavares.pojo.dto.RegisterDTO;
 import com.plantdisease.plantdiseasejavares.service.AdminAuthService;
-import com.plantdisease.plantdiseasejavares.util.SecurityUtil;
 import com.plantdisease.plantdiseasejavares.pojo.vo.AdminInfoVO;
 import com.plantdisease.plantdiseasejavares.pojo.vo.AdminLoginVO;
 import io.swagger.v3.oas.annotations.Operation;
@@ -41,10 +40,10 @@ public class AdminAuthController {
      */
     @Operation(summary = "管理员登录")
     @PostMapping("/login")
-    @SkipJwtValidation
     public Result<AdminLoginVO> login(@Valid @RequestBody LoginDTO loginDTO, HttpServletRequest request) {
         String ip = getClientIp(request);
         AdminLoginVO vo = adminAuthService.login(loginDTO, ip);
+        StpUtil.login(vo.getId());
         return Result.success(vo);
     }
 
@@ -55,7 +54,6 @@ public class AdminAuthController {
      */
     @Operation(summary = "管理员注册")
     @PostMapping("/register")
-    @SkipJwtValidation
     public Result<Void> register(@Valid @RequestBody RegisterDTO registerDTO) {
         adminAuthService.register(registerDTO);
         return Result.success();
@@ -68,9 +66,8 @@ public class AdminAuthController {
      */
     @Operation(summary = "获取管理员信息")
     @GetMapping("/info")
-    @SkipJwtValidation
     public Result<AdminInfoVO> info(HttpServletRequest request) {
-        Long userId = SecurityUtil.getCurrentUserId(request);
+        Long userId = StpUtil.getLoginIdAsLong();
         AdminInfoVO vo = adminAuthService.getAdminInfo(userId);
         return Result.success(vo);
     }
@@ -81,7 +78,6 @@ public class AdminAuthController {
      */
     @Operation(summary = "管理员登出")
     @PostMapping("/logout")
-    @SkipJwtValidation
     public Result<Void> logout() {
         return Result.success();
     }

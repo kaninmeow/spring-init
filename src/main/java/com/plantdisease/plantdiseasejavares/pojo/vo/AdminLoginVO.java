@@ -16,9 +16,6 @@ import java.time.LocalDateTime;
 @Schema(description = "管理员登录响应")
 public class AdminLoginVO {
 
-    @Schema(description = "JWT token")
-    private String token;
-
     @Schema(description = "管理员ID")
     private Long id;
 

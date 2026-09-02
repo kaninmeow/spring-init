@@ -1,0 +1,13 @@
+
+db:
+  host:
+  username:
+  password:
+
+aliyun:
+  oss:
+    endpoint:
+    bucket-name:
+    region:
+    access-key-id:
+    access-key-secret:

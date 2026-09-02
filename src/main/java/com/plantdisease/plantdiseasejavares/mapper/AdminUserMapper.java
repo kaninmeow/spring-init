@@ -1,7 +1,7 @@
 package com.plantdisease.plantdiseasejavares.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.plantdisease.plantdiseasejavares.pojo.entity.SysAdmin;
+import com.plantdisease.plantdiseasejavares.pojo.entity.AdminUser;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
@@ -10,5 +10,5 @@ import org.apache.ibatis.annotations.Mapper;
  * @author plant-disease
  */
 @Mapper
-public interface SysAdminMapper extends BaseMapper<SysAdmin> {
+public interface AdminUserMapper extends BaseMapper<AdminUser> {
 }

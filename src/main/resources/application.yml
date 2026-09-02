@@ -7,7 +7,7 @@ spring:
   application:
     name: plant-disease-java-res
   datasource:
-    url: jdbc:mysql://localhost:3306/plant_disease?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai
+    url: jdbc:mysql://${db.host}/mycosafe?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai
     username: ${db.username}
     password: ${db.password}
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -25,10 +25,6 @@ mybatis-plus:
       logic-delete-value: 1
       logic-not-delete-value: 0
       id-type: auto
-
-jwt:
-  secret: ${app.jwt-secret}
-  expiration: 86400000
 
 springdoc:
   swagger-ui:
